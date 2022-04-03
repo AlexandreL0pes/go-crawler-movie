@@ -14,6 +14,10 @@ import (
 // var url string = "https://www.imdb.com/title/tt1877830/?ref_=watch_fanfav_tt_t_1"
 var url string = "https://www.imdb.com/search/title/?title_type=feature,tv_movie&count=250"
 
+const totalIterations = 10
+
+var currentInteration = 0
+
 type Movie struct {
 	Title      string   `json:"title"`
 	Year       string   `json:"year"`
@@ -34,7 +38,9 @@ func scrape(url string) {
 	c := colly.NewCollector()
 
 	c.OnRequest(func(r *colly.Request) {
-		fmt.Println(">> Visiting", r.URL)
+		fmt.Println("> Visiting", r.URL)
+		fmt.Printf(">> Interation: %d from %d", currentInteration, totalIterations)
+		fmt.Printf("\n>> Movies collected: %d", currentInteration*250)
 	})
 
 	c.OnHTML(".lister-item", func(h *colly.HTMLElement) {
@@ -76,6 +82,14 @@ func scrape(url string) {
 
 		movies = append(movies, Movie{title, year, rating, synopsis, categories, stars, director})
 
+	})
+
+	c.OnHTML("a.lister-page-next", func(e *colly.HTMLElement) {
+		if currentInteration <= totalIterations {
+			nextPage := e.Request.AbsoluteURL(e.Attr("href"))
+			currentInteration++
+			c.Visit(nextPage)
+		}
 	})
 
 	c.Visit(url)
