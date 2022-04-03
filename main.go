@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gocolly/colly"
 )
@@ -14,7 +15,7 @@ import (
 // var url string = "https://www.imdb.com/title/tt1877830/?ref_=watch_fanfav_tt_t_1"
 var url string = "https://www.imdb.com/search/title/?title_type=feature,tv_movie&count=250"
 
-const totalIterations = 10
+const totalIterations = 1000
 
 var currentInteration = 0
 
@@ -34,6 +35,8 @@ func main() {
 }
 
 func scrape(url string) {
+	start := time.Now()
+
 	movies := []Movie{}
 	c := colly.NewCollector()
 
@@ -93,11 +96,16 @@ func scrape(url string) {
 	})
 
 	c.Visit(url)
-
+	fmt.Printf("\n\nTook around %s \n", elapsedTime(start))
 	storeMovies(movies)
 }
 
 func storeMovies(m []Movie) {
 	file, _ := json.MarshalIndent(m, "", " ")
 	_ = ioutil.WriteFile("movies.json", file, 0644)
+}
+
+func elapsedTime(start time.Time) time.Duration {
+	elapsed := time.Since(start)
+	return elapsed
 }
