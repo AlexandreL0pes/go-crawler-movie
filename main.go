@@ -95,6 +95,11 @@ func scrape(url string) {
 		}
 	})
 
+	// Set error handler
+	c.OnError(func(r *colly.Response, err error) {
+		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+	})
+
 	c.Visit(url)
 	fmt.Printf("\n\nTook around %s \n", elapsedTime(start))
 	storeMovies(movies)
