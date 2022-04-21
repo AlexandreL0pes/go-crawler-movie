@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gocolly/colly"
+	"github.com/gocolly/colly/extensions"
 )
 
 // var url string = "https://www.imdb.com/title/tt1877830/?ref_=watch_fanfav_tt_t_1"
@@ -38,12 +39,25 @@ func scrape(url string) {
 	start := time.Now()
 
 	movies := []Movie{}
-	c := colly.NewCollector()
+	c := colly.NewCollector(
+		colly.MaxDepth(2),
+		colly.Async(true),
+	)
+
+	extensions.RandomUserAgent(c)
+	extensions.Referer(c)
+
+	c.Limit(&colly.LimitRule{
+		DomainGlob:  "*",
+		Parallelism: 4,
+		RandomDelay: 2 * time.Second,
+	})
 
 	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Accept-Language", "en-US")
 		fmt.Println("> Visiting", r.URL)
 		fmt.Printf(">> Interation: %d from %d", currentInteration, totalIterations)
-		fmt.Printf("\n>> Movies collected: %d", currentInteration*250)
+		fmt.Printf("\n>> Movies collected: %d\n", currentInteration*250)
 	})
 
 	c.OnHTML(".lister-item", func(h *colly.HTMLElement) {
@@ -97,10 +111,12 @@ func scrape(url string) {
 
 	// Set error handler
 	c.OnError(func(r *colly.Response, err error) {
-		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+		fmt.Println("\nRequest URL:", r.Request.URL, "failed with response:", r.StatusCode, "\nError:", err)
+		fmt.Println("body: ", r.Body)
 	})
 
 	c.Visit(url)
+	c.Wait()
 	fmt.Printf("\n\nTook around %s \n", elapsedTime(start))
 	storeMovies(movies)
 }
