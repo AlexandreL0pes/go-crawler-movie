@@ -11,6 +11,7 @@ import (
 
 func Build(h *colly.HTMLElement) entity.Movie {
 	movie := entity.Movie{
+		Id:         "",
 		Title:      "",
 		Year:       "",
 		Rating:     0.0,
@@ -22,6 +23,7 @@ func Build(h *colly.HTMLElement) entity.Movie {
 
 	moviePath := getElementPath(h)
 
+	movie.Id = h.ChildAttr(moviePath.Id, "data-tconst")
 	movie.Title = h.ChildText(moviePath.Title)
 	movie.Year = h.ChildText(moviePath.Year)
 	movie.Synopsis = h.ChildText(moviePath.Synopsis)

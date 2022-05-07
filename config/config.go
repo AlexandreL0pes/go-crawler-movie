@@ -1,6 +1,7 @@
 package config
 
 type MovieInfoPath struct {
+	Id         string
 	Title      string
 	Year       string
 	Rating     string
@@ -11,6 +12,7 @@ type MovieInfoPath struct {
 }
 
 var WithRatingPath = MovieInfoPath{
+	Id:         "div.lister.list.detail.sub-list > div > div > div.lister-top-right > div",
 	Title:      "div.lister.list.detail.sub-list > div > div > div.lister-item-content > h3 > a",
 	Year:       "div.lister.list.detail.sub-list > div > div > div.lister-item-content > h3 > span.lister-item-year.text-muted.unbold",
 	Rating:     "div.lister.list.detail.sub-list > div > div > div.lister-item-content > div > div.inline-block.ratings-imdb-rating > strong",
@@ -21,6 +23,7 @@ var WithRatingPath = MovieInfoPath{
 }
 
 var WithoutRating = MovieInfoPath{
+	Id:         "div.lister.list.detail.sub-list > div > div > div.lister-top-right > div",
 	Title:      "div.lister.list.detail.sub-list > div > div > div.lister-item-content > h3 > a",
 	Year:       "div.lister.list.detail.sub-list > div > div > div.lister-item-content > h3 > span.lister-item-year.text-muted.unbold",
 	Rating:     "div.lister.list.detail.sub-list > div > div > div.lister-item-content > div > div.inline-block.ratings-imdb-rating > strong",

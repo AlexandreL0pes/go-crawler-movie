@@ -1,6 +1,7 @@
 package entity
 
 type Movie struct {
+	Id         string   `json:"id"`
 	Title      string   `json:"title"`
 	Year       string   `json:"year"`
 	Rating     float64  `json:"rating"`
