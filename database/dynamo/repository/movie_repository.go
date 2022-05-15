@@ -15,18 +15,12 @@ const TABLE_NAME = "movies"
 
 type MoviesRepository struct {
 	dynamoDB dynamo.DynamoDB
-	Movies   []entity.Movie
 }
 
 func Initialize(db dynamo.DynamoDB) *MoviesRepository {
 	return &MoviesRepository{
 		dynamoDB: db,
 	}
-}
-
-func (s *MoviesRepository) Save(movie entity.Movie) {
-	s.Movies = append(s.Movies, movie)
-	s.Insert(&movie)
 }
 
 func (s *MoviesRepository) Insert(movie *entity.Movie) error {
