@@ -30,7 +30,7 @@ func (s *MoviesRepository) Insert(movie *entities.Movie) error {
 		fmt.Printf("Got error marshalling map:\n\t %s", err.Error())
 	}
 
-	fmt.Printf("Marshed Message = %v\n", mm)
+	// fmt.Printf("Marshed Message = %v\n", mm.)
 
 	input := &dynamodb.PutItemInput{
 		Item:      mm,
@@ -44,7 +44,7 @@ func (s *MoviesRepository) Insert(movie *entities.Movie) error {
 		return nil
 	}
 
-	fmt.Println("Successfully movie created")
+	fmt.Printf("Successfully movie '%s' created\n", movie.Title)
 
 	return nil
 }
