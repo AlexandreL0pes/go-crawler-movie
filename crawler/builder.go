@@ -1,16 +1,16 @@
 package crawler
 
 import (
-	"go-crawler-movie/config"
-	"go-crawler-movie/domain/entity"
+	"go-crawler-movie/crawler/config"
+	"go-crawler-movie/domain/entities"
 	"strconv"
 	"strings"
 
 	"github.com/gocolly/colly"
 )
 
-func Build(h *colly.HTMLElement) entity.Movie {
-	movie := entity.Movie{
+func Build(h *colly.HTMLElement) entities.Movie {
+	movie := entities.Movie{
 		Id:         "",
 		Title:      "",
 		Year:       "",

@@ -13,12 +13,6 @@ var dynamo *dynamodb.DynamoDB
 
 var TableName = "movies"
 
-// func connectDynamo() (db *dynamodb.DynamoDB) {
-// 	return dynamodb.New(session.Must(session.NewSession(&aws.Config{
-// 		Region: aws.String("eu-central-1"),
-// 	})))
-// }
-
 func createTable() {
 	sess := session.Must(session.NewSession(&aws.Config{
 		Endpoint: aws.String("http://localhost:8000"),

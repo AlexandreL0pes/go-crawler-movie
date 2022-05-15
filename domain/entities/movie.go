@@ -1,4 +1,4 @@
-package entity
+package entities
 
 type Movie struct {
 	Id         string   `json:"id"`

@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	"go-crawler-movie/domain/entity"
+	"go-crawler-movie/domain/entities"
 
 	"go-crawler-movie/database/dynamo"
 
@@ -23,7 +23,7 @@ func Initialize(db dynamo.DynamoDB) *MoviesRepository {
 	}
 }
 
-func (s *MoviesRepository) Insert(movie *entity.Movie) error {
+func (s *MoviesRepository) Insert(movie *entities.Movie) error {
 	mm, err := dynamodbattribute.MarshalMap(movie)
 
 	if err != nil {
