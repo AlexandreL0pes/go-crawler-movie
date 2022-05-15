@@ -78,7 +78,7 @@ func (c Crawler) handleError() {
 func (c Crawler) getMovies() {
 	c.Collector.OnHTML(".lister-item", func(h *colly.HTMLElement) {
 		movie := Build(h)
-		c.Repository.Save(movie)
+		c.Repository.Insert(&movie)
 	})
 }
 

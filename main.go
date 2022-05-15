@@ -1,13 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"go-crawler-movie/crawler"
 	"go-crawler-movie/database/dynamo"
-	"go-crawler-movie/domain/entity"
-	"go-crawler-movie/domain/repository"
-	"io/ioutil"
+	"go-crawler-movie/database/dynamo/repository"
 	"time"
 )
 
@@ -22,25 +19,19 @@ import (
 func main() {
 	fmt.Println("> executing crawler")
 	start := time.Now()
+
+	// setup dynamo db connection and movies repository
 	dynamo, _ := dynamo.NewDynamoDB()
 	repository := repository.Initialize(dynamo)
 
+	// setup crawler and start crawling
 	c := crawler.Initialize(repository)
 	c.Execute()
 
-	storeMovies(repository.Movies)
-	fmt.Printf("\n\nTook around %s \n", elapsedTime(start))
+	elapsedTime(start)
 }
 
-func storeMovies(m []entity.Movie) {
-	file, _ := json.MarshalIndent(m, "", " ")
-	now := time.Now()
-	filename := fmt.Sprintf("movies teste - %s.json", now.Format(time.UnixDate))
-
-	_ = ioutil.WriteFile(filename, file, 0644)
-}
-
-func elapsedTime(start time.Time) time.Duration {
+func elapsedTime(start time.Time) {
 	elapsed := time.Since(start)
-	return elapsed
+	fmt.Printf("\n\nTook around %s \n", elapsed)
 }
