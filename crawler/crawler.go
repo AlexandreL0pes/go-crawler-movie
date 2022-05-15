@@ -2,7 +2,7 @@ package crawler
 
 import (
 	"fmt"
-	"go-crawler-movie/domain/repository"
+	"go-crawler-movie/database/dynamo/repository"
 	"time"
 
 	"github.com/gocolly/colly"
