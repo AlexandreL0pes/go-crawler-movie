@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"go-crawler-movie/crawler"
+	"go-crawler-movie/database/dynamo"
 	"go-crawler-movie/domain/entity"
 	"go-crawler-movie/domain/repository"
 	"io/ioutil"
@@ -21,9 +22,10 @@ import (
 func main() {
 	fmt.Println("> executing crawler")
 	start := time.Now()
-	repository := repository.Initialize()
+	dynamo, _ := dynamo.NewDynamoDB()
+	repository := repository.Initialize(dynamo)
 
-	c := crawler.Initialize(&repository)
+	c := crawler.Initialize(repository)
 	c.Execute()
 
 	storeMovies(repository.Movies)

@@ -12,7 +12,7 @@ import (
 const MAX_DEPTH = 2
 const ASYNC_ENABLED = false
 
-const totalIterations = 5
+const totalIterations = 1
 
 var currentInteration = 0
 

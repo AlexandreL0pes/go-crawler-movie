@@ -13,6 +13,12 @@ var dynamo *dynamodb.DynamoDB
 
 var TableName = "movies"
 
+// func connectDynamo() (db *dynamodb.DynamoDB) {
+// 	return dynamodb.New(session.Must(session.NewSession(&aws.Config{
+// 		Region: aws.String("eu-central-1"),
+// 	})))
+// }
+
 func createTable() {
 	sess := session.Must(session.NewSession(&aws.Config{
 		Endpoint: aws.String("http://localhost:8000"),
@@ -24,13 +30,13 @@ func createTable() {
 	input := &dynamodb.CreateTableInput{
 		AttributeDefinitions: []*dynamodb.AttributeDefinition{
 			{
-				AttributeName: aws.String("Id"),
+				AttributeName: aws.String("id"),
 				AttributeType: aws.String("S"),
 			},
 		},
 		KeySchema: []*dynamodb.KeySchemaElement{
 			{
-				AttributeName: aws.String("Id"),
+				AttributeName: aws.String("id"),
 				KeyType:       aws.String("HASH"),
 			},
 		},
