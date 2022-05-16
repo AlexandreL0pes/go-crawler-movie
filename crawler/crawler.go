@@ -70,6 +70,7 @@ func (c Crawler) setLanguageHeader() {
 
 func (c Crawler) handleError() {
 	c.Collector.OnError(func(r *colly.Response, err error) {
+		retryRequest(r.Request, 5)
 		fmt.Println("\nRequest URL:", r.Request.URL, "failed with response:", r.StatusCode, "\nError:", err)
 		fmt.Println("body: ", r.Body)
 	})
@@ -95,4 +96,16 @@ func (c Crawler) navigate() {
 			c.Collector.Visit(nextPage)
 		}
 	})
+}
+
+func retryRequest(r *colly.Request, maxRetries int) int {
+	retriesLeft := maxRetries
+	if x, ok := r.Ctx.GetAny("retriesLeft").(int); ok {
+		retriesLeft = x
+	}
+	if retriesLeft > 0 {
+		r.Ctx.Put("retriesLeft", retriesLeft-1)
+		r.Retry()
+	}
+	return retriesLeft
 }
