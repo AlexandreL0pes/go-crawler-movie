@@ -38,7 +38,7 @@ func Build(h *colly.HTMLElement) entities.Movie {
 	if rating != "" {
 		converted_rating, err := strconv.ParseFloat(rating, 32)
 
-		if err != nil {
+		if err == nil {
 			movie.Rating = converted_rating
 		}
 	}
