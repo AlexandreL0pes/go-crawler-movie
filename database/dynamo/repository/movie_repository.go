@@ -14,10 +14,10 @@ import (
 const TABLE_NAME = "movies"
 
 type MoviesRepository struct {
-	dynamoDB dynamo.DynamoDB
+	dynamoDB *dynamo.DynamoDB
 }
 
-func Initialize(db dynamo.DynamoDB) *MoviesRepository {
+func Initialize(db *dynamo.DynamoDB) *MoviesRepository {
 	return &MoviesRepository{
 		dynamoDB: db,
 	}

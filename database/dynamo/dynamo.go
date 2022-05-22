@@ -10,8 +10,8 @@ type DynamoDB struct {
 	Client *dynamodb.DynamoDB
 }
 
-func NewDynamoDB() (DynamoDB, error) {
-	db := DynamoDB{}
+func NewDynamoDB() (*DynamoDB, error) {
+	db := &DynamoDB{}
 
 	sess := session.Must(session.NewSession(&aws.Config{
 		Endpoint: aws.String("http://localhost:8000"),
