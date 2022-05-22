@@ -25,7 +25,7 @@ func Build(h *colly.HTMLElement) entities.Movie {
 
 	movie.Id = h.ChildAttr(moviePath.Id, "data-tconst")
 	movie.Title = h.ChildText(moviePath.Title)
-	movie.Year = h.ChildText(moviePath.Year)
+	movie.Year = removeParenthesis(h.ChildText(moviePath.Year))
 	movie.Synopsis = h.ChildText(moviePath.Synopsis)
 	movie.Categories = strings.Split(h.ChildText(moviePath.Categories), ", ")
 	movie.Director = h.ChildText(moviePath.Director)
@@ -57,4 +57,8 @@ func getElementPath(h *colly.HTMLElement) config.MovieInfoPath {
 	}
 
 	return config.WithoutRating
+}
+
+func removeParenthesis(base string) string {
+	return strings.ReplaceAll(strings.ReplaceAll(base, ")", ""), "(", "")
 }
