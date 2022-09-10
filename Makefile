@@ -11,3 +11,7 @@ reset-run:
 
 count-movies:
 	aws dynamodb scan --table-name movies --select "COUNT" --endpoint-url http://localhost:8000 --region us-east-1
+
+create-db:
+	docker run -it -v "$PWD":/src -w /src nouchka/sqlite3 movies.db
+	chmod 666 movies.db

@@ -2,15 +2,16 @@ package crawler
 
 import (
 	"fmt"
-	"go-crawler-movie/database/dynamo/repository"
+	"go-crawler-movie/database/sqlite/repository"
 	"time"
 
 	"github.com/gocolly/colly"
+	"github.com/gocolly/colly/debug"
 	"github.com/gocolly/colly/extensions"
 )
 
 const MAX_DEPTH = 2
-const ASYNC_ENABLED = false
+const ASYNC_ENABLED = true
 
 const totalIterations = 1
 
@@ -19,19 +20,22 @@ var currentInteration = 0
 var url string = "https://www.imdb.com/search/title/?title_type=feature,tv_movie&count=250"
 
 type Crawler struct {
-	Collector  *colly.Collector
-	Repository *repository.MoviesRepository
+	Collector     *colly.Collector
+	Repository    *repository.MoviesRepository
+	LogRepository *repository.ExecutionLogRepository
 }
 
 var crawler Crawler
 
-func Initialize(r *repository.MoviesRepository) Crawler {
+func Initialize(mr *repository.MoviesRepository, lr *repository.ExecutionLogRepository) Crawler {
 	crawler.Collector = colly.NewCollector(
 		colly.MaxDepth(MAX_DEPTH),
 		colly.Async(ASYNC_ENABLED),
+		colly.Debugger(&debug.LogDebugger{}),
 	)
 
-	crawler.Repository = r
+	crawler.Repository = mr
+	crawler.LogRepository = lr
 
 	extensions.RandomUserAgent(crawler.Collector)
 	extensions.Referer(crawler.Collector)
@@ -79,20 +83,26 @@ func (c Crawler) handleError() {
 func (c Crawler) getMovies() {
 	c.Collector.OnHTML(".lister-item", func(h *colly.HTMLElement) {
 		movie := Build(h)
-		c.Repository.Insert(&movie)
+		c.Repository.Insert(movie)
 	})
 }
 
 func (c Crawler) Execute() {
+	last_processed_url := c.LogRepository.GetLastExecution()
+	fmt.Println("\n\nlast_processed_url: ", last_processed_url)
+	if last_processed_url != "" {
+		url = last_processed_url
+	}
 	c.Collector.Visit(url)
 	c.Collector.Wait()
 }
 
 func (c Crawler) navigate() {
 	c.Collector.OnHTML("a.lister-page-next", func(e *colly.HTMLElement) {
-		if currentInteration <= totalIterations {
+		if true {
 			nextPage := e.Request.AbsoluteURL(e.Attr("href"))
 			currentInteration++
+			c.LogRepository.RegisterLastExecution(nextPage)
 			c.Collector.Visit(nextPage)
 		}
 	})

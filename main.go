@@ -3,29 +3,23 @@ package main
 import (
 	"fmt"
 	"go-crawler-movie/crawler"
-	"go-crawler-movie/database/dynamo"
-	"go-crawler-movie/database/dynamo/repository"
+	"go-crawler-movie/database/sqlite/repository"
 	"time"
+
+	"go-crawler-movie/database/sqlite"
 )
 
-// var url string = "https://www.imdb.com/search/title/?title_type=feature,tv_movie&count=250"
-// 620 interations - 155000 movies
-// var url string = "https://www.imdb.com/search/title/?title_type=feature,tv_movie&count=250&after=WzEyMzA0MCwidHQxMDU4MDE4OCIsNzc1MDFd&ref_=adv_nxt"
-// 27000
-// 2500
-
-// var url string = "https://www.imdb.com/search/title/?title_type=feature,tv_movie&count=250&after=WzE0NzQ2MCwidHQwMDk5NTQ0Iiw5MTAwMV0%3D&ref_=adv_nxt"
-
 func main() {
-	fmt.Println("> executing crawler")
 	start := time.Now()
 
-	// setup dynamo db connection and movies repository
-	dynamo, _ := dynamo.NewDynamoDB()
-	repository := repository.Initialize(dynamo)
-
+	sdb, err := sqlite.NewSqliteDB()
+	if err != nil {
+		panic(err)
+	}
+	moviesRepository := repository.Initialize(sdb)
+	logsRepository := repository.NewExecutionLogRepository(sdb)
 	// setup crawler and start crawling
-	c := crawler.Initialize(repository)
+	c := crawler.Initialize(moviesRepository, logsRepository)
 	c.Execute()
 
 	elapsedTime(start)
